@@ -1,0 +1,141 @@
+# ============================================================================
+# Codemagic CI/CD — Solar Samrat (Expo SDK 54)
+# Mirrors the proven MuscleGrid Connect pipeline. Free macOS minutes build iOS
+# to TestFlight; Linux builds the Android APK / Play AAB.
+#
+# ── ONE-TIME SETUP (Codemagic web UI, https://codemagic.io) ──
+#   1. Sign up → "Add application" → connect THIS repo.
+#   2. Create the App Store Connect record for "Solar Samrat" (bundle
+#      in.solarsamrat.app) and a Google Play app (in.solarsamrat.app).
+#   3. Teams → Integrations → App Store Connect → add your API key, name it
+#      EXACTLY  SolarSamrat_ASC.  Put the numeric ASC app id in APP_STORE_APPLE_ID.
+#   4. (Android) Teams → Code signing identities → Android keystores → generate
+#      one named  solarsamrat_upload  (BACK IT UP). Add the Play service-account
+#      JSON to GCLOUD_SERVICE_ACCOUNT_CREDENTIALS.
+# ============================================================================
+
+workflows:
+  ios-testflight:
+    name: Solar Samrat — iOS TestFlight
+    max_build_duration: 90
+    instance_type: mac_mini_m2
+    triggering:
+      events: [push]
+      branch_patterns:
+        - pattern: master
+          include: true
+          source: true
+    integrations:
+      app_store_connect: SolarSamrat_ASC
+    environment:
+      vars:
+        APP_STORE_APPLE_ID: "REPLACE_WITH_ASC_APP_ID"
+        BUNDLE_ID: "in.solarsamrat.app"
+      node: 20
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install JS dependencies
+        script: npm ci
+      - name: Generate native iOS project
+        script: npx expo prebuild --platform ios --clean --non-interactive
+      - name: Install CocoaPods
+        script: cd ios && pod install
+      - name: Set build number from latest TestFlight build
+        script: |
+          cd ios
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          agvtool new-version -all "$((LATEST + 1))"
+      - name: Set up code signing
+        script: |
+          set -e
+          keychain initialize
+          openssl genrsa -out /tmp/dist_cert_key.pem 2048
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE --certificate-key @file:/tmp/dist_cert_key.pem --create
+          keychain add-certificates
+          xcode-project use-profiles --warn-only
+      - name: Build .ipa
+        script: |
+          set -e
+          WORKSPACE=$(find ios -maxdepth 2 -name "*.xcworkspace" -not -path "*.xcodeproj/*" | head -1)
+          SCHEME=$(basename "$WORKSPACE" .xcworkspace)
+          xcode-project build-ipa --workspace "$WORKSPACE" --scheme "$SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+
+  android-apk:
+    name: Solar Samrat — Android Test APK
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      vars:
+        PACKAGE_NAME: "in.solarsamrat.app"
+      node: 20
+    scripts:
+      - name: Install JS dependencies
+        script: npm ci
+      - name: Generate native Android project
+        script: npx expo prebuild --platform android --clean --non-interactive
+      - name: Throwaway signing keystore (test only)
+        script: |
+          keytool -genkeypair -v -keystore /tmp/ss.keystore -alias ss \
+            -keyalg RSA -keysize 2048 -validity 9125 \
+            -storepass solarsamrat -keypass solarsamrat \
+            -dname "CN=Solar Samrat, OU=App, O=Solar Samrat, L=Gurgaon, S=Haryana, C=IN"
+      - name: Build signed release APK
+        script: |
+          cd android
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=/tmp/ss.keystore \
+            -Pandroid.injected.signing.store.password=solarsamrat \
+            -Pandroid.injected.signing.key.alias=ss \
+            -Pandroid.injected.signing.key.password=solarsamrat
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+    publishing:
+      email:
+        recipients: [pawan846@outlook.com]
+        notify: { success: true, failure: true }
+
+  android-release:
+    name: Solar Samrat — Android Play Release (AAB)
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      android_signing: [solarsamrat_upload]
+      vars:
+        PACKAGE_NAME: "in.solarsamrat.app"
+      node: 20
+    scripts:
+      - name: Install JS dependencies
+        script: npm ci
+      - name: Generate native Android project
+        script: npx expo prebuild --platform android --clean --non-interactive
+      - name: Set versionCode from latest Play build
+        script: |
+          LATEST=$(google-play get-latest-build-number --package-name "$PACKAGE_NAME" 2>/dev/null || echo 0)
+          sed -i "s/versionCode [0-9][0-9]*/versionCode $((LATEST + 1))/" android/app/build.gradle
+      - name: Build signed AAB
+        script: |
+          cd android
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=$CM_KEYSTORE_PATH \
+            -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$CM_KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$CM_KEY_PASSWORD
+    artifacts:
+      - android/app/build/outputs/**/*.aab
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: false
+      email:
+        recipients: [pawan846@outlook.com]
+        notify: { success: true, failure: true }
