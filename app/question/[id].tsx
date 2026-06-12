@@ -11,9 +11,11 @@ import { useAuth } from '@/src/AuthContext';
 import { getQuestion, answerQuestion, upvoteAnswer, markBestAnswer } from '@/src/api/samrat';
 import { apiError } from '@/src/api/client';
 import { Card, RankChip, Loading, timeAgo } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function QuestionDetail() {
+  const { colors, styles } = useThemed(makeStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { user } = useAuth();
@@ -105,7 +107,7 @@ export default function QuestionDetail() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

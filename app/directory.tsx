@@ -10,11 +10,13 @@ import { getDirectory } from '@/src/api/samrat';
 import { openDm } from '@/src/api/chat';
 import { apiError } from '@/src/api/client';
 import { Card, Avatar, RankChip, Loading, Empty, ROLE_LABEL } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 const ROLES = ['', 'dealer', 'distributor', 'epc', 'brand'];
 
 export default function Directory() {
+  const { colors, styles } = useThemed(makeStyles);
   const router = useRouter();
   const [role, setRole] = useState('');
   const [q, setQ] = useState('');
@@ -86,7 +88,7 @@ export default function Directory() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

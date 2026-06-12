@@ -10,9 +10,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPost, commentPost, likePost } from '@/src/api/samrat';
 import { apiError } from '@/src/api/client';
 import { Avatar, RankChip, Loading, timeAgo, ROLE_LABEL } from '@/src/ui';
-import { colors, spacing, font } from '@/src/theme';
+import { spacing, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function PostDetail() {
+  const { colors, styles } = useThemed(makeStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const qc = useQueryClient();
@@ -104,7 +106,7 @@ export default function PostDetail() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

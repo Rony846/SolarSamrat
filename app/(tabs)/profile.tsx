@@ -8,9 +8,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/src/AuthContext';
 import { Card, Avatar, RankChip, ROLE_LABEL } from '@/src/ui';
 import { PRIVACY_POLICY_URL, TERMS_URL } from '@/src/config';
-import { colors, spacing, radius, font, serif } from '@/src/theme';
+import { spacing, radius, font, serif } from '@/src/theme';
+import { useThemed, useTheme, THEME_META, type ThemePalette } from '@/src/ThemeContext';
 
 export default function Profile() {
+  const { colors, styles } = useThemed(makeStyles);
   const { member, user, signOut } = useAuth();
   const router = useRouter();
 
@@ -51,6 +53,8 @@ export default function Profile() {
           </View>
         </Card>
 
+        <ThemePicker />
+
         <View style={styles.menu}>
           <MenuItem icon="trophy-outline" label="Rank & Leaderboard" onPress={() => router.push('/rank')} />
           <MenuItem icon="people-outline" label="Member directory" onPress={() => router.push('/directory')} />
@@ -71,7 +75,36 @@ export default function Profile() {
   );
 }
 
+function ThemePicker() {
+  const { colors, styles } = useThemed(makeStyles);
+  const { themeKey, setTheme } = useTheme();
+  return (
+    <View style={styles.themeCard}>
+      <Text style={styles.themeTitle}>Theme</Text>
+      <View style={styles.themeRow}>
+        {THEME_META.map((t) => {
+          const active = themeKey === t.key;
+          return (
+            <TouchableOpacity
+              key={t.key}
+              style={[styles.themeTile, { backgroundColor: t.bg }, active && { borderColor: colors.primary }]}
+              onPress={() => setTheme(t.key)}
+              activeOpacity={0.85}
+            >
+              <View style={[styles.themeSwatch, { backgroundColor: t.swatch }]}>
+                {active && <Ionicons name="checkmark" size={14} color={t.bg} />}
+              </View>
+              <Text style={[styles.themeName, active && { color: colors.primary }]} numberOfLines={1}>{t.name}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 function Detail({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; label: string; value?: string | null }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.detail}>
       <Ionicons name={icon} size={16} color={colors.muted} />
@@ -82,6 +115,7 @@ function Detail({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; 
 }
 
 function MenuItem({ icon, label, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <TouchableOpacity style={styles.menuItem} onPress={onPress} activeOpacity={0.7}>
       <Ionicons name={icon} size={20} color={colors.text} />
@@ -91,18 +125,24 @@ function MenuItem({ icon, label, onPress }: { icon: keyof typeof Ionicons.glyphM
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   top: { flexDirection: 'row', alignItems: 'center' },
   name: { fontSize: font.size.xl + 2, fontFamily: serif, color: colors.text },
   owner: { fontSize: font.size.sm, color: colors.textDim, marginTop: 2 },
   badges: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: spacing.sm },
-  verified: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#0E2A1E', borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 2 },
+  verified: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: colors.accentSoft, borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 2 },
   verifiedText: { fontSize: font.size.xs, color: colors.success, fontWeight: font.weight.heavy },
   details: { marginTop: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: spacing.md, gap: spacing.md },
   detail: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   detailLabel: { fontSize: font.size.sm, color: colors.muted, width: 76 },
   detailValue: { fontSize: font.size.sm, color: colors.text, flex: 1, fontWeight: font.weight.medium },
+  themeCard: { marginTop: spacing.xl, backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: spacing.lg },
+  themeTitle: { fontSize: font.size.md, fontWeight: font.weight.black, color: colors.text, marginBottom: spacing.md },
+  themeRow: { flexDirection: 'row', gap: spacing.sm },
+  themeTile: { flex: 1, alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.md, borderRadius: radius.md, borderWidth: 1.5, borderColor: colors.border },
+  themeSwatch: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  themeName: { fontSize: 10, color: colors.textDim, fontWeight: font.weight.semibold, textAlign: 'center' },
   menu: { marginTop: spacing.xl, backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, overflow: 'hidden' },
   menuItem: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingHorizontal: spacing.lg, paddingVertical: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border },
   menuLabel: { flex: 1, fontSize: font.size.md, color: colors.text, fontWeight: font.weight.medium },

@@ -7,11 +7,13 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/src/AuthContext';
 import { getLeaderboard } from '@/src/api/samrat';
 import { Card, Avatar, RankChip, Loading, Empty, ROLE_LABEL } from '@/src/ui';
-import { colors, spacing, radius, font, RANK_COLOR } from '@/src/theme';
+import { spacing, radius, font, RANK_COLOR } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 const LADDER = ['Sipahi', 'Sardar', 'Raja', 'Maharaja', 'Samrat'];
 
 export default function Rank() {
+  const { colors, styles } = useThemed(makeStyles);
   const { member } = useAuth();
   const router = useRouter();
   const boardQ = useQuery({ queryKey: ['leaderboard'], queryFn: () => getLeaderboard() });
@@ -112,7 +114,7 @@ function progressPct(crowns: number, toNext: number): number {
   return Math.min(100, Math.round((crowns / total) * 100));
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   backHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   backTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

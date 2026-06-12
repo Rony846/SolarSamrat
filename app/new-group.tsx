@@ -10,9 +10,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createGroup } from '@/src/api/chat';
 import { apiError } from '@/src/api/client';
 import { Field, PrimaryButton } from '@/src/ui';
-import { colors, spacing, font } from '@/src/theme';
+import { spacing, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function NewGroup() {
+  const { colors, styles } = useThemed(makeStyles);
   const router = useRouter();
   const qc = useQueryClient();
   const [name, setName] = useState('');
@@ -73,7 +75,7 @@ export default function NewGroup() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

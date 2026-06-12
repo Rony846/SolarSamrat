@@ -10,9 +10,11 @@ import { aiQuote, type AiQuoteInput } from '@/src/api/samrat';
 import type { AiQuoteResult } from '@/src/api/types';
 import { apiError } from '@/src/api/client';
 import { Card, Field, PrimaryButton, inr } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function Quote() {
+  const { colors, styles } = useThemed(makeStyles);
   const router = useRouter();
   const [units, setUnits] = useState('');
   const [bill, setBill] = useState('');
@@ -81,6 +83,7 @@ export default function Quote() {
 }
 
 function ResultCard({ r }: { r: AiQuoteResult }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <Card style={{ marginTop: spacing.lg, borderColor: colors.primary }}>
       <View style={styles.sizeRow}>
@@ -118,6 +121,7 @@ function ResultCard({ r }: { r: AiQuoteResult }) {
 }
 
 function Metric({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.metric}>
       <Text style={styles.metricLabel}>{label}</Text>
@@ -127,6 +131,7 @@ function Metric({ label, value, accent }: { label: string; value: string; accent
 }
 
 function BomRow({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; label: string; value?: string }) {
+  const { colors, styles } = useThemed(makeStyles);
   if (!value) return null;
   return (
     <View style={styles.bomRow}>
@@ -137,7 +142,7 @@ function BomRow({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; 
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   backHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   backTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

@@ -9,9 +9,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { listChannels, type ChatChannel } from '@/src/api/chat';
 import { useChatSocket } from '@/src/useChatSocket';
 import { Avatar, Loading, Empty, timeAgo, splitLeadEmoji } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function Chat() {
+  const { colors, styles } = useThemed(makeStyles);
   const router = useRouter();
   const qc = useQueryClient();
   const chQ = useQuery({ queryKey: ['chat-channels'], queryFn: listChannels });
@@ -57,6 +59,7 @@ export default function Chat() {
 }
 
 function ChannelRow({ channel, onPress }: { channel: ChatChannel; onPress: () => void }) {
+  const { colors, styles } = useThemed(makeStyles);
   const isGroup = channel.type === 'group';
   const { emoji, text: cleanName } = isGroup ? splitLeadEmoji(channel.name) : { emoji: '#', text: channel.name };
   const last = channel.last_message;
@@ -84,7 +87,7 @@ function ChannelRow({ channel, onPress }: { channel: ChatChannel; onPress: () =>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   title: { fontSize: font.size.xl, fontWeight: font.weight.black, color: colors.text },

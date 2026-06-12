@@ -12,9 +12,11 @@ import {
 } from '@/src/api/chat';
 import { useChatSocket } from '@/src/useChatSocket';
 import { Loading, RankChip, timeAgo, splitLeadEmoji } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function ChatRoom() {
+  const { colors, styles } = useThemed(makeStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { user } = useAuth();
@@ -131,6 +133,7 @@ export default function ChatRoom() {
 }
 
 function Bubble({ msg, mine, showSender }: { msg: ChatMessage; mine: boolean; showSender: boolean }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={[styles.bubbleWrap, mine ? styles.wrapMine : styles.wrapOther]}>
       {showSender && (
@@ -147,7 +150,7 @@ function Bubble({ msg, mine, showSender }: { msg: ChatMessage; mine: boolean; sh
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

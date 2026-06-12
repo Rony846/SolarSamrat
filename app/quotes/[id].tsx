@@ -10,13 +10,16 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getQuote, setQuoteStatus } from '@/src/api/biz';
 import { apiError } from '@/src/api/client';
 import { Card, Loading, PrimaryButton, inr } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
-const STATUS_COLOR: Record<string, string> = {
-  draft: colors.muted, sent: colors.accent, accepted: colors.success, rejected: colors.danger,
-};
+const statusColors = (c: ThemePalette): Record<string, string> => ({
+  draft: c.muted, sent: c.accent, accepted: c.success, rejected: c.danger,
+});
 
 export default function QuoteDetail() {
+  const { colors, styles } = useThemed(makeStyles);
+  const STATUS_COLOR = statusColors(colors);
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const qc = useQueryClient();
@@ -119,6 +122,7 @@ export default function QuoteDetail() {
 }
 
 function Row({ label, value, big, profit }: { label: string; value: string; big?: boolean; profit?: boolean }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.totalRow}>
       <Text style={[styles.totalLabel, big && { color: colors.text, fontWeight: font.weight.black }]}>{label}</Text>
@@ -128,6 +132,7 @@ function Row({ label, value, big, profit }: { label: string; value: string; big?
 }
 
 function StatusBtn({ label, active, color, onPress, disabled }: { label: string; active: boolean; color: string; onPress: () => void; disabled?: boolean }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <TouchableOpacity style={[styles.sBtn, active && { backgroundColor: color + '22', borderColor: color }]} onPress={onPress} disabled={disabled}>
       <Text style={[styles.sBtnText, active && { color }]}>{label}</Text>
@@ -135,7 +140,7 @@ function StatusBtn({ label, active, color, onPress, disabled }: { label: string;
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

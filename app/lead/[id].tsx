@@ -10,9 +10,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getLead, quoteLead } from '@/src/api/samrat';
 import { apiError } from '@/src/api/client';
 import { Card, Avatar, RankChip, Loading, timeAgo } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function LeadDetail() {
+  const { colors, styles } = useThemed(makeStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const leadQ = useQuery({ queryKey: ['lead', id], queryFn: () => getLead(id!), enabled: !!id });
@@ -103,6 +105,7 @@ export default function LeadDetail() {
 }
 
 function Spec({ label, value }: { label: string; value: string }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.spec}>
       <Text style={styles.specLabel}>{label}</Text>
@@ -111,7 +114,7 @@ function Spec({ label, value }: { label: string; value: string }) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

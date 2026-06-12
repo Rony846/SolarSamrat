@@ -8,6 +8,7 @@ import { useFonts, PlayfairDisplay_600SemiBold, PlayfairDisplay_700Bold } from '
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/src/AuthContext';
+import { ThemeProvider } from '@/src/ThemeContext';
 import { queryClient } from '@/src/queryClient';
 import { getMyMembership } from '@/src/api/samrat';
 import { colors, spacing, radius, font } from '@/src/theme';
@@ -109,10 +110,12 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <StatusBar style="light" />
-          <RootNavigator />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <StatusBar style="light" />
+            <RootNavigator />
+          </AuthProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
   );

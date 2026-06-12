@@ -9,9 +9,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getFeed, getGroups, likePost } from '@/src/api/samrat';
 import type { Post } from '@/src/api/types';
 import { Card, Avatar, RankChip, Loading, Empty, timeAgo, ROLE_LABEL } from '@/src/ui';
-import { colors, spacing, radius, font, serif } from '@/src/theme';
+import { spacing, radius, font, serif } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function Feed() {
+  const { colors, styles } = useThemed(makeStyles);
   const router = useRouter();
   const qc = useQueryClient();
   const [group, setGroup] = useState<string | undefined>(undefined);
@@ -99,6 +101,7 @@ export default function Feed() {
 }
 
 export function PostCard({ post, onLike, onOpen }: { post: Post; onLike: () => void; onOpen: () => void }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <Card style={{ marginBottom: spacing.md }}>
       <TouchableOpacity activeOpacity={0.8} onPress={onOpen}>
@@ -130,7 +133,7 @@ export function PostCard({ post, onLike, onOpen }: { post: Post; onLike: () => v
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

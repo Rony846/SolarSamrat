@@ -8,13 +8,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { getBizSummary, listQuotes, type Quote } from '@/src/api/biz';
 import { Card, Loading, inr } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
-const STATUS_COLOR: Record<string, string> = {
-  draft: colors.muted, sent: colors.accent, accepted: colors.success, rejected: colors.danger,
-};
+const statusColors = (c: ThemePalette): Record<string, string> => ({
+  draft: c.muted, sent: c.accent, accepted: c.success, rejected: c.danger,
+});
 
 export default function Business() {
+  const { colors, styles } = useThemed(makeStyles);
+  const STATUS_COLOR = statusColors(colors);
   const router = useRouter();
   const sumQ = useQuery({ queryKey: ['biz-summary'], queryFn: getBizSummary });
   const quotesQ = useQuery({ queryKey: ['quotes'], queryFn: () => listQuotes() });
@@ -90,6 +93,7 @@ export default function Business() {
 }
 
 function Stat({ label, value, icon, accent, small }: { label: string; value: string; icon: keyof typeof Ionicons.glyphMap; accent?: boolean; small?: boolean }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <Card style={[styles.stat, small && { padding: spacing.md }]}>
       <Ionicons name={icon} size={small ? 18 : 22} color={accent ? colors.success : colors.primary} />
@@ -100,6 +104,7 @@ function Stat({ label, value, icon, accent, small }: { label: string; value: str
 }
 
 function Action({ icon, label, onPress, primary }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void; primary?: boolean }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <TouchableOpacity style={[styles.action, primary && styles.actionPrimary]} onPress={onPress} activeOpacity={0.85}>
       <Ionicons name={icon} size={22} color={primary ? colors.onPrimary : colors.primary} />
@@ -108,7 +113,7 @@ function Action({ icon, label, onPress, primary }: { icon: keyof typeof Ionicons
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   title: { fontSize: font.size.xl, fontWeight: font.weight.black, color: colors.text },

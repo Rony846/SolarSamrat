@@ -4,7 +4,8 @@ import {
   type TextInputProps, type ViewStyle, type StyleProp,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, radius, font, cardShadow, RANK_COLOR } from './theme';
+import { spacing, radius, font, cardShadow, RANK_COLOR } from './theme';
+import { useThemed, type ThemePalette } from './ThemeContext';
 
 export const ROLE_LABEL: Record<string, string> = {
   dealer: 'Dealer',
@@ -15,10 +16,12 @@ export const ROLE_LABEL: Record<string, string> = {
 };
 
 export function Card({ children, style }: { children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+  const { styles } = useThemed(makeStyles);
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
 export function RankChip({ rank, crowns }: { rank?: string; crowns?: number }) {
+  const { colors, styles } = useThemed(makeStyles);
   const c = RANK_COLOR[rank || 'Sipahi'] || colors.muted;
   return (
     <View style={[styles.rankChip, { borderColor: c }]}>
@@ -39,6 +42,7 @@ export function PrimaryButton({
   icon?: keyof typeof Ionicons.glyphMap;
   variant?: 'primary' | 'outline';
 }) {
+  const { colors, styles } = useThemed(makeStyles);
   const isOutline = variant === 'outline';
   return (
     <TouchableOpacity
@@ -75,6 +79,7 @@ export function PrimaryButton({
 export function Field({
   label, ...props
 }: { label: string } & TextInputProps) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={{ marginBottom: spacing.lg }}>
       <Text style={styles.fieldLabel}>{label}</Text>
@@ -88,6 +93,7 @@ export function Field({
 }
 
 export function Loading() {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.center}>
       <ActivityIndicator color={colors.primary} size="large" />
@@ -96,6 +102,7 @@ export function Loading() {
 }
 
 export function Empty({ icon = 'sparkles-outline', text }: { icon?: keyof typeof Ionicons.glyphMap; text: string }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.center}>
       <Ionicons name={icon} size={42} color={colors.border} />
@@ -105,6 +112,7 @@ export function Empty({ icon = 'sparkles-outline', text }: { icon?: keyof typeof
 }
 
 export function ScreenTitle({ title, subtitle, right }: { title: string; subtitle?: string; right?: React.ReactNode }) {
+  const { styles } = useThemed(makeStyles);
   return (
     <View style={styles.titleRow}>
       <View style={{ flex: 1 }}>
@@ -117,6 +125,7 @@ export function ScreenTitle({ title, subtitle, right }: { title: string; subtitl
 }
 
 export function Avatar({ name, size = 40 }: { name?: string; size?: number }) {
+  const { styles } = useThemed(makeStyles);
   const letter = (name || '?').trim().charAt(0).toUpperCase();
   return (
     <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}>
@@ -151,7 +160,7 @@ export function splitLeadEmoji(name: string): { emoji: string; text: string } {
   return { emoji: '#', text: name || '' };
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderRadius: radius.lg,

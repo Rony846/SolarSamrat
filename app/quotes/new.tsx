@@ -10,12 +10,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createQuote, type QuoteItem } from '@/src/api/biz';
 import { apiError } from '@/src/api/client';
 import { PrimaryButton, inr } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 type DraftItem = { name: string; qty: string; unit_price: string; cost_price: string; gst_pct: string };
 const blank = (): DraftItem => ({ name: '', qty: '1', unit_price: '', cost_price: '', gst_pct: '18' });
 
 export default function NewQuote() {
+  const { colors, styles } = useThemed(makeStyles);
   const router = useRouter();
   const qc = useQueryClient();
   const [customer, setCustomer] = useState('');
@@ -127,6 +129,7 @@ export default function NewQuote() {
 }
 
 function Mini({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.mini}>
       <Text style={styles.miniLabel}>{label}</Text>
@@ -136,6 +139,7 @@ function Mini({ label, value, onChange }: { label: string; value: string; onChan
 }
 
 function Row({ label, value, big, profit }: { label: string; value: string; big?: boolean; profit?: boolean }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.totalRow}>
       <Text style={[styles.totalLabel, big && { color: colors.text, fontWeight: font.weight.black }]}>{label}</Text>
@@ -144,7 +148,7 @@ function Row({ label, value, big, profit }: { label: string; value: string; big?
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },

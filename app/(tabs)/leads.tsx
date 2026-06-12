@@ -6,9 +6,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { getLeads } from '@/src/api/samrat';
 import { Card, RankChip, Loading, Empty, timeAgo } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function Leads() {
+  const { colors, styles } = useThemed(makeStyles);
   const router = useRouter();
   const leadsQ = useQuery({ queryKey: ['leads', 'open'], queryFn: () => getLeads('open') });
 
@@ -65,6 +67,7 @@ export default function Leads() {
 }
 
 function Tag({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text: string }) {
+  const { colors, styles } = useThemed(makeStyles);
   return (
     <View style={styles.tag}>
       <Ionicons name={icon} size={12} color={colors.textDim} />
@@ -73,7 +76,7 @@ function Tag({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text: strin
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   title: { fontSize: font.size.xl, fontWeight: font.weight.black, color: colors.text },

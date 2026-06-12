@@ -10,7 +10,8 @@ import { useAuth } from '@/src/AuthContext';
 import { applyMembership, getMeta, getMyMembership, type ApplyInput } from '@/src/api/samrat';
 import { apiError } from '@/src/api/client';
 import { Field, PrimaryButton, ROLE_LABEL } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function Apply() {
   const { user, member, setMember, signOut } = useAuth();
@@ -24,6 +25,7 @@ export default function Apply() {
 }
 
 function StatusScreen() {
+  const { colors, styles } = useThemed(makeStyles);
   const { member, setMember, signOut } = useAuth();
   const [checking, setChecking] = useState(false);
   const rejected = member?.verification === 'rejected';
@@ -77,6 +79,7 @@ function ApplyForm({
   setMember: ReturnType<typeof useAuth>['setMember'];
   signOut: () => void;
 }) {
+  const { colors, styles } = useThemed(makeStyles);
   const [form, setForm] = useState<ApplyInput>({
     business_name: '', owner_name: user?.name || '', phone: user?.phone || '',
     role: 'dealer', gstin: '', city: '', state: '', categories: [],
@@ -174,7 +177,7 @@ function ApplyForm({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   h1: { fontSize: font.size.xxl, fontWeight: font.weight.black, color: colors.text },
   sub: { fontSize: font.size.sm, color: colors.textDim, marginTop: spacing.xs, marginBottom: spacing.xl, lineHeight: 19 },

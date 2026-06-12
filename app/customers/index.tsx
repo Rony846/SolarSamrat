@@ -10,9 +10,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { listCustomers, createCustomer } from '@/src/api/biz';
 import { apiError } from '@/src/api/client';
 import { Card, Avatar, Loading, Empty } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { spacing, radius, font } from '@/src/theme';
+import { useThemed, type ThemePalette } from '@/src/ThemeContext';
 
 export default function Customers() {
+  const { colors, styles } = useThemed(makeStyles);
   const router = useRouter();
   const qc = useQueryClient();
   const custQ = useQuery({ queryKey: ['customers'], queryFn: () => listCustomers() });
@@ -89,7 +91,7 @@ export default function Customers() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
   headerTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },
