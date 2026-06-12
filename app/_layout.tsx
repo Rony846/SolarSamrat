@@ -1,14 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import { Stack, type ErrorBoundaryProps } from 'expo-router';
+import { Stack, useRouter, type ErrorBoundaryProps } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/src/AuthContext';
 import { queryClient } from '@/src/queryClient';
 import { getMyMembership } from '@/src/api/samrat';
 import { colors, spacing, radius, font } from '@/src/theme';
+
+/** Routes a tapped notification to its chat channel (or generic `link`). */
+function useNotificationRouting(authed: boolean) {
+  const router = useRouter();
+  const coldStartHandled = useRef(false);
+
+  useEffect(() => {
+    if (!authed) return;
+    const go = (resp: Notifications.NotificationResponse | null) => {
+      const data = resp?.notification?.request?.content?.data as
+        | { chat_channel?: string; link?: string }
+        | undefined;
+      if (data?.chat_channel) router.push(`/chat/${data.chat_channel}` as never);
+      else if (typeof data?.link === 'string' && data.link.startsWith('/')) router.push(data.link as never);
+    };
+    if (!coldStartHandled.current) {
+      coldStartHandled.current = true;
+      void Notifications.getLastNotificationResponseAsync().then(go);
+    }
+    const sub = Notifications.addNotificationResponseReceivedListener(go);
+    return () => sub.remove();
+  }, [authed, router]);
+}
 
 function isActiveMember(m: ReturnType<typeof useAuth>['member']): boolean {
   return !!m && m.verification === 'verified' && m.status === 'active';
@@ -18,6 +42,7 @@ function RootNavigator() {
   const { token, member, loading, setMember } = useAuth();
   const [resolved, setResolved] = useState(false);
   const [resolving, setResolving] = useState(false);
+  useNotificationRouting(!!token);
 
   // On cold start we only restore token+user; fetch the membership once so the
   // router can decide between the apply gate and the main tabs.

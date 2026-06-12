@@ -42,7 +42,13 @@
           "photosPermission": "Allow Solar Samrat to attach photos to your posts and business profile."
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-notifications",
+        {
+          "color": "#F4B740"
+        }
+      ]
     ],
     "extra": {
       "router": {},

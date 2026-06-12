@@ -16,3 +16,12 @@ export async function verifyOtp(phone: string, otp: string): Promise<SamratLogin
   const res = await api.post<SamratLoginResponse>('/samrat/auth/otp/verify', { phone, otp });
   return res.data;
 }
+
+// Expo push token registration (shared CRM endpoints — token targets this app).
+export async function registerPushToken(token: string, platform?: string): Promise<void> {
+  await api.post('/auth/push-token', { token, platform });
+}
+
+export async function removePushToken(token: string): Promise<void> {
+  await api.delete('/auth/push-token', { data: { token } });
+}

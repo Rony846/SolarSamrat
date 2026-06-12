@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { TOKEN_KEY, USER_KEY, setUnauthorizedHandler } from './api/client';
+import { registerForPush, unregisterPush } from './push';
 import type { AppUser, Member } from './api/types';
 
 interface AuthContextValue {
@@ -30,7 +31,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           SecureStore.getItemAsync(TOKEN_KEY),
           SecureStore.getItemAsync(USER_KEY),
         ]);
-        if (t) setToken(t);
+        if (t) {
+          setToken(t);
+          void registerForPush(); // re-register this device on cold start
+        }
         if (u) setUser(JSON.parse(u) as AppUser);
       } catch {
         // logged-out fallthrough
@@ -54,9 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(newToken);
     setUser(newUser);
     setMemberState(newMember);
+    void registerForPush();
   }, []);
 
   const signOut = useCallback(async () => {
+    await unregisterPush(); // drop this device's token while still authenticated
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     await SecureStore.deleteItemAsync(USER_KEY);
     setToken(null);
