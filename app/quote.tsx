@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { aiQuote, type AiQuoteInput } from '@/src/api/samrat';
 import type { AiQuoteResult } from '@/src/api/types';
@@ -12,6 +13,7 @@ import { Card, Field, PrimaryButton, inr } from '@/src/ui';
 import { colors, spacing, radius, font } from '@/src/theme';
 
 export default function Quote() {
+  const router = useRouter();
   const [units, setUnits] = useState('');
   const [bill, setBill] = useState('');
   const [state, setState] = useState('');
@@ -43,6 +45,11 @@ export default function Quote() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
+      <View style={styles.backHeader}>
+        <TouchableOpacity onPress={() => router.back()}><Ionicons name="chevron-back" size={26} color={colors.text} /></TouchableOpacity>
+        <Text style={styles.backTitle}>AI Solar Quote</Text>
+        <View style={{ width: 26 }} />
+      </View>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: 120 }} keyboardShouldPersistTaps="handled">
           <View style={styles.hero}>
@@ -132,6 +139,8 @@ function BomRow({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; 
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
+  backHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
+  backTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },
   hero: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   heroTitle: { fontSize: font.size.xxl, fontWeight: font.weight.black, color: colors.text },
   heroSub: { fontSize: font.size.sm, color: colors.textDim, marginTop: spacing.xs, lineHeight: 19 },

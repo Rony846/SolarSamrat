@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl,
+  View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, RefreshControl, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { getDirectory } from '@/src/api/samrat';
+import { openDm } from '@/src/api/chat';
+import { apiError } from '@/src/api/client';
 import { Card, Avatar, RankChip, Loading, Empty, ROLE_LABEL } from '@/src/ui';
 import { colors, spacing, radius, font } from '@/src/theme';
 
@@ -21,6 +23,15 @@ export default function Directory() {
     queryKey: ['directory', role, search],
     queryFn: () => getDirectory({ role: role || undefined, q: search || undefined }),
   });
+
+  const startDm = async (memberId: string) => {
+    try {
+      const ch = await openDm(memberId);
+      router.push(`/chat/${ch.id}`);
+    } catch (e) {
+      Alert.alert('Could not open chat', apiError(e));
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -62,11 +73,11 @@ export default function Directory() {
             <View style={{ flex: 1, marginLeft: spacing.md }}>
               <Text style={styles.name}>{item.business_name}</Text>
               <Text style={styles.sub}>{ROLE_LABEL[item.role] || item.role}{item.city ? ` · ${item.city}` : ''}</Text>
+              <View style={{ marginTop: 4 }}><RankChip rank={item.rank} crowns={item.crowns} /></View>
             </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <RankChip rank={item.rank} />
-              <Text style={styles.crowns}>{item.crowns} 👑</Text>
-            </View>
+            <TouchableOpacity style={styles.dmBtn} onPress={() => startDm(item.id)} activeOpacity={0.8}>
+              <Ionicons name="chatbubble-ellipses" size={20} color={colors.primary} />
+            </TouchableOpacity>
           </Card>
         )}
         ListEmptyComponent={dirQ.isLoading ? <Loading /> : <Empty icon="people-outline" text="No members found." />}
@@ -89,5 +100,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm },
   name: { fontSize: font.size.md, fontWeight: font.weight.heavy, color: colors.text },
   sub: { fontSize: font.size.xs, color: colors.muted, marginTop: 2 },
-  crowns: { fontSize: font.size.sm, color: colors.primary, fontWeight: font.weight.heavy, marginTop: 3 },
+  dmBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primarySoft, borderWidth: 1, borderColor: colors.primaryDark, alignItems: 'center', justifyContent: 'center', marginLeft: spacing.sm },
 });

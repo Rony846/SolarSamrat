@@ -37,6 +37,9 @@ export default function Feed() {
           <Text style={styles.brandSub}>The solar trade, together</Text>
         </View>
         <View style={styles.headerBtns}>
+          <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/quote')}>
+            <Ionicons name="sparkles" size={23} color={colors.primary} />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/qa')}>
             <Ionicons name="help-circle-outline" size={24} color={colors.text} />
           </TouchableOpacity>

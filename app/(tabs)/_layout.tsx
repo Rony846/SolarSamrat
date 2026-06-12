@@ -21,16 +21,16 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
+        name="chat"
+        options={{ title: 'Chat', tabBarIcon: ({ color, size }) => <Ionicons name="chatbubbles" size={size} color={color} /> }}
+      />
+      <Tabs.Screen
         name="index"
         options={{ title: 'Feed', tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} /> }}
       />
       <Tabs.Screen
         name="leads"
         options={{ title: 'Leads', tabBarIcon: ({ color, size }) => <Ionicons name="briefcase" size={size} color={color} /> }}
-      />
-      <Tabs.Screen
-        name="quote"
-        options={{ title: 'AI Quote', tabBarIcon: ({ color, size }) => <Ionicons name="sparkles" size={size} color={color} /> }}
       />
       <Tabs.Screen
         name="rank"

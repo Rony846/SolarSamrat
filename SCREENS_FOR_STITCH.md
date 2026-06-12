@@ -19,6 +19,31 @@ Rank, Profile (active tab gold).
 
 ---
 
+## 0a. Chat list (Chat tab — the home/default tab) 💬
+WhatsApp-style chat list, dark theme. Header "Chat" with a small gold subtitle
+"6 groups · 2 DMs" and two right-side icon buttons (person-add for new DM, gold
+add-circle for new group). A vertical list of chat rows: each row has a circular
+icon — for groups a dark circle with the group's emoji (🇮🇳, 🛒, 📈, 🛠, 📜,
+🏗️), for DMs a gold-initial avatar — then the group/business name (bold), a
+one-line last-message preview ("Sharma Solar: anyone has 540W in stock?") in
+muted grey, and on the right the time and a round **gold unread badge** with a
+count. Clean, dense, instantly familiar to WhatsApp users.
+
+## 0b. Chat room (conversation) 💬
+A messaging screen, dark. Back header with the group/contact name and a small
+"Public group" subtitle. Scrolling message bubbles: **my messages right-aligned
+in gold with dark text**, others left-aligned in dark cards with a 1px border; in
+groups, each incoming sender shows a small gold business name + rank chip above
+their bubble. Tiny timestamp inside each bubble. Sticky bottom input bar: a
+rounded dark "Message…" text field and a round gold send button. Feels like
+WhatsApp but premium and dark.
+
+## 0c. New group (modal) 💬
+Modal "New group" with close X. Inputs: Group name, Topic/description. A
+"Visibility" section with two selectable option cards — "Public · Any verified
+member can find & join" and "Private · Invite-only" (selected card gold-outlined
+with a filled radio). Full-width gold "Create group" button.
+
 ## 1. Splash
 Centered gold crown emblem on the navy gradient, wordmark "Solar Samrat" in bold
 white below, gold tagline "Where every dealer rules". Minimal, premium.
@@ -141,6 +166,7 @@ with "670 👑".
 ---
 
 ### Tab bar (persistent)
-5 tabs, dark bar #0E1424 with a top border. Icons + labels: Feed (home), Leads
-(briefcase), AI Quote (sparkles), Rank (trophy), Profile (person). Active = gold,
-inactive = muted grey.
+5 tabs, dark bar #0E1424 with a top border. Icons + labels: **Chat** (chatbubbles),
+Feed (home), Leads (briefcase), Rank (trophy), Profile (person). Active = gold,
+inactive = muted grey. Chat is the default/home tab. AI Quote is reached from a
+gold sparkles button in the Feed header (and the Profile menu), not a tab.

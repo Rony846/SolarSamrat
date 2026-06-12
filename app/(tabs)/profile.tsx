@@ -54,7 +54,7 @@ export default function Profile() {
         <View style={styles.menu}>
           <MenuItem icon="people-outline" label="Member directory" onPress={() => router.push('/directory')} />
           <MenuItem icon="help-circle-outline" label="Questions & Answers" onPress={() => router.push('/qa')} />
-          <MenuItem icon="sparkles-outline" label="AI Solar Quote" onPress={() => router.push('/(tabs)/quote')} />
+          <MenuItem icon="sparkles-outline" label="AI Solar Quote" onPress={() => router.push('/quote')} />
           <MenuItem icon="document-text-outline" label="Privacy Policy" onPress={() => Linking.openURL(PRIVACY_POLICY_URL)} />
           <MenuItem icon="reader-outline" label="Terms of Service" onPress={() => Linking.openURL(TERMS_URL)} />
         </View>

@@ -139,6 +139,18 @@ export const timeAgo = (iso?: string): string => {
 export const inr = (n?: number): string =>
   n == null ? '—' : '₹' + Number(n).toLocaleString('en-IN');
 
+/** Split a "🛒 Buy & Sell"-style name into its leading emoji + the rest.
+ * Avoids \p{Emoji} (unreliable on some Hermes builds) — treats a non-ASCII
+ * first token before a space as the emoji. */
+export function splitLeadEmoji(name: string): { emoji: string; text: string } {
+  const sp = (name || '').indexOf(' ');
+  if (sp > 0) {
+    const head = name.slice(0, sp);
+    if (/[^\x00-\x7F]/.test(head)) return { emoji: head, text: name.slice(sp + 1) };
+  }
+  return { emoji: '#', text: name || '' };
+}
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.card,

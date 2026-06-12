@@ -61,11 +61,14 @@ function RootNavigator() {
         <Stack.Screen name="new-post" options={{ presentation: 'modal' }} />
         <Stack.Screen name="new-lead" options={{ presentation: 'modal' }} />
         <Stack.Screen name="ask" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="new-group" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="quote" />
         <Stack.Screen name="qa" />
         <Stack.Screen name="directory" />
         <Stack.Screen name="post" />
         <Stack.Screen name="lead" />
         <Stack.Screen name="question" />
+        <Stack.Screen name="chat" />
       </Stack.Protected>
     </Stack>
   );
