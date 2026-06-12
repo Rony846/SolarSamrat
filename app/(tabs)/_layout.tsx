@@ -33,8 +33,8 @@ export default function TabsLayout() {
         options={{ title: 'Leads', tabBarIcon: ({ color, size }) => <Ionicons name="briefcase" size={size} color={color} /> }}
       />
       <Tabs.Screen
-        name="rank"
-        options={{ title: 'Rank', tabBarIcon: ({ color, size }) => <Ionicons name="trophy" size={size} color={color} /> }}
+        name="business"
+        options={{ title: 'Business', tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} /> }}
       />
       <Tabs.Screen
         name="profile"

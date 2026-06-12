@@ -88,12 +88,16 @@ function RootNavigator() {
         <Stack.Screen name="ask" options={{ presentation: 'modal' }} />
         <Stack.Screen name="new-group" options={{ presentation: 'modal' }} />
         <Stack.Screen name="quote" />
+        <Stack.Screen name="rank" />
         <Stack.Screen name="qa" />
         <Stack.Screen name="directory" />
         <Stack.Screen name="post" />
         <Stack.Screen name="lead" />
         <Stack.Screen name="question" />
         <Stack.Screen name="chat" />
+        <Stack.Screen name="quotes" />
+        <Stack.Screen name="customers" />
+        <Stack.Screen name="sales" />
       </Stack.Protected>
     </Stack>
   );

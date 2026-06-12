@@ -52,6 +52,7 @@ export default function Profile() {
         </Card>
 
         <View style={styles.menu}>
+          <MenuItem icon="trophy-outline" label="Rank & Leaderboard" onPress={() => router.push('/rank')} />
           <MenuItem icon="people-outline" label="Member directory" onPress={() => router.push('/directory')} />
           <MenuItem icon="help-circle-outline" label="Questions & Answers" onPress={() => router.push('/qa')} />
           <MenuItem icon="sparkles-outline" label="AI Solar Quote" onPress={() => router.push('/quote')} />

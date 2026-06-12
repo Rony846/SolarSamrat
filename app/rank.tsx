@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/src/AuthContext';
@@ -12,6 +13,7 @@ const LADDER = ['Sipahi', 'Sardar', 'Raja', 'Maharaja', 'Samrat'];
 
 export default function Rank() {
   const { member } = useAuth();
+  const router = useRouter();
   const boardQ = useQuery({ queryKey: ['leaderboard'], queryFn: () => getLeaderboard() });
 
   const crowns = member?.crowns ?? 0;
@@ -20,6 +22,11 @@ export default function Rank() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
+      <View style={styles.backHeader}>
+        <TouchableOpacity onPress={() => router.back()}><Ionicons name="chevron-back" size={26} color={colors.text} /></TouchableOpacity>
+        <Text style={styles.backTitle}>Rank & Leaderboard</Text>
+        <View style={{ width: 26 }} />
+      </View>
       <FlatList
         data={boardQ.data?.leaderboard || []}
         keyExtractor={(m) => m.id}
@@ -107,6 +114,8 @@ function progressPct(crowns: number, toNext: number): number {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
+  backHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border },
+  backTitle: { fontSize: font.size.lg, fontWeight: font.weight.black, color: colors.text },
   title: { fontSize: font.size.xl, fontWeight: font.weight.black, color: colors.text, marginBottom: spacing.md },
   myCard: { marginBottom: spacing.xl },
   myTop: { flexDirection: 'row', alignItems: 'center' },

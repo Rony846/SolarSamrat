@@ -44,6 +44,41 @@ Modal "New group" with close X. Inputs: Group name, Topic/description. A
 member can find & join" and "Private · Invite-only" (selected card gold-outlined
 with a filled radio). Full-width gold "Create group" button.
 
+## 0d. Business dashboard (Business tab) 📊
+A dealer business dashboard, dark. Header "My Business" with gold subtitle
+"Quotes · customers · profit". Top: two large stat cards — **Revenue** (gold
+icon) and **Profit** (green) — then a row of three small stat cards (Customers,
+Sales, Pending). A row of three quick-action buttons: **New Quote** (gold filled),
+Customers, Add Sale (outlined). Then "Recent quotes" section: rows showing
+customer name, quote number + "profit ₹X", the total on the right, and a coloured
+status chip (draft grey / sent blue / accepted green / rejected red).
+
+## 0e. Quote builder (New Quote) 🧾
+A form to build a customer quote, dark. Header "New Quote". Customer name + phone
+inputs. An "Items" section with item cards — each card: item name field, then a
+compact 4-column row of small inputs (Qty, Rate ₹, Cost ₹, GST %), with a trash
+icon to remove. A dashed "+ Add item" button. Below: Discount ₹ and Notes inputs.
+A live **totals card** (Subtotal, GST, Discount, big gold **Total**, and a green
+**Your profit** line). Full-width gold "Create quote" button.
+
+## 0f. Quote detail (share) 🧾
+Header "Quote". A card: quote number, customer name + phone, a status chip; an
+item list (name · qty×rate · amount); totals (Subtotal, GST, Discount, big gold
+Total, green Your profit); notes box. Below the card: a prominent gold **"Send to
+customer"** button (share icon) + a smaller outlined **"PDF"** button. Then an
+"Update status" row of three buttons (Sent / Accepted / Rejected), the active one
+filled in its colour. Accepting books the sale.
+
+## 0g. Customers (mini-CRM) 👥
+Header "Customers" with a + button that reveals an inline add form (name, phone,
+city, Save). A list of customer cards: gold-initial avatar, name, "phone · city",
+and a small quote icon button on the right to start a quote for them.
+
+## 0h. Record Sale 💰
+Header "Record Sale". Inputs: Customer, What did you sell (optional), then Sale
+amount ₹ and Your cost ₹ side by side. A **profit card** showing the live computed
+profit big (green if positive). Full-width gold "Save sale" button.
+
 ## 1. Splash
 Centered gold crown emblem on the navy gradient, wordmark "Solar Samrat" in bold
 white below, gold tagline "Where every dealer rules". Minimal, premium.
@@ -167,6 +202,7 @@ with "670 👑".
 
 ### Tab bar (persistent)
 5 tabs, dark bar #0E1424 with a top border. Icons + labels: **Chat** (chatbubbles),
-Feed (home), Leads (briefcase), Rank (trophy), Profile (person). Active = gold,
-inactive = muted grey. Chat is the default/home tab. AI Quote is reached from a
-gold sparkles button in the Feed header (and the Profile menu), not a tab.
+Feed (home), Leads (briefcase), **Business** (stats-chart), Profile (person).
+Active = gold, inactive = muted grey. Chat is the default/home tab. AI Quote is a
+gold sparkles button in the Feed header; Rank & Leaderboard live in the Profile
+menu (not tabs).
