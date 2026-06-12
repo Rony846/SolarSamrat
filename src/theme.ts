@@ -1,31 +1,37 @@
 /**
- * "Royal Dark" — Solar Samrat's command-center theme. Deep navy-black with
- * royal gold (the Samrat crown) and an electric-blue energy accent.
+ * "Obsidian & Gold Elite" — Solar Samrat's premium theme (from the founder's
+ * Stitch design kit). Warm obsidian-black surfaces + champagne/polished gold,
+ * Playfair Display serif for brand/display headings, Inter-style sans for UI.
+ * Quiet-luxury "private club" aesthetic for the top tier of the solar trade.
  */
 export const colors = {
-  bg: '#0A0E1A',
-  bgAlt: '#0E1424',
-  card: '#131A2E',
-  cardAlt: '#1A2238',
-  border: '#243049',
-  track: '#1E2740',
+  bg: '#110E07',          // obsidian (surface-container-lowest)
+  bgAlt: '#16130B',       // surface
+  card: '#1F1B13',        // surface-container-low
+  cardAlt: '#2A261C',     // surface-container-high
+  border: '#332E22',      // subtle warm outline
+  track: '#2A261C',
 
-  text: '#F5F7FA',
-  textDim: '#A6B0C3',
-  muted: '#7A869E',
+  text: '#EDE6D6',        // warm white (on-surface)
+  textDim: '#D0C5AF',     // champagne grey (on-surface-variant)
+  muted: '#99907C',       // outline
 
-  primary: '#F4B740',      // royal gold
-  primaryDark: '#E8A317',
-  primarySoft: '#2A2410',
-  onPrimary: '#0A0E1A',
+  primary: '#E8C24A',     // polished gold
+  primaryDark: '#D4AF37', // champagne gold
+  primarySoft: '#2A2310', // gold-tinted surface (active chips)
+  onPrimary: '#2A1F00',   // dark brown text on gold
 
-  accent: '#2563EB',       // electric blue
-  accentSoft: '#15203B',
+  accent: '#9FB4FF',      // cool tertiary — RFQ/info accents
+  accentSoft: '#1A1B26',
 
-  success: '#10B981',
-  warning: '#F59E0B',
-  danger: '#EF4444',
+  success: '#34D399',
+  warning: '#F5B544',
+  danger: '#F2655C',
 } as const;
+
+// Brand / display serif (loaded in app/_layout). Used for wordmarks + heroes.
+export const serif = 'PlayfairDisplay_700Bold';
+export const serifSemi = 'PlayfairDisplay_600SemiBold';
 
 export const spacing = {
   xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 28, xxxl: 40,
@@ -48,17 +54,17 @@ export const font = {
 
 export const cardShadow = {
   shadowColor: '#000',
-  shadowOpacity: 0.25,
-  shadowRadius: 16,
-  shadowOffset: { width: 0, height: 6 },
-  elevation: 3,
+  shadowOpacity: 0.45,
+  shadowRadius: 24,
+  shadowOffset: { width: 0, height: 10 },
+  elevation: 4,
 } as const;
 
-// Rank → colour, used by the crown/status chips across the app.
+// Rank → colour (warm gold ladder), used by crown/status chips.
 export const RANK_COLOR: Record<string, string> = {
-  Sipahi: '#7A869E',
-  Sardar: '#B45309',
-  Raja: '#F4B740',
-  Maharaja: '#C026D3',
-  Samrat: '#FACC15',
+  Sipahi: '#99907C',
+  Sardar: '#C0892E',
+  Raja: '#E8C24A',
+  Maharaja: '#F0CC74',
+  Samrat: '#FFE08A',
 };

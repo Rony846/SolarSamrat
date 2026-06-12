@@ -8,7 +8,7 @@ import { useAuth } from '@/src/AuthContext';
 import { sendOtp, verifyOtp } from '@/src/api/auth';
 import { apiError } from '@/src/api/client';
 import { Field, PrimaryButton } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { colors, spacing, radius, font, serif } from '@/src/theme';
 
 export default function Login() {
   const { signIn } = useAuth();
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySoft, borderWidth: 1.5, borderColor: colors.primaryDark,
     alignItems: 'center', justifyContent: 'center', marginBottom: spacing.lg,
   },
-  brand: { fontSize: font.size.hero, fontWeight: font.weight.black, color: colors.text, letterSpacing: 0.5 },
+  brand: { fontSize: font.size.hero + 4, fontFamily: serif, color: colors.text, letterSpacing: 0.5 },
   tagline: { fontSize: font.size.md, color: colors.primary, marginTop: spacing.xs, fontWeight: font.weight.semibold },
   card: {
     backgroundColor: colors.card, borderRadius: radius.xl, borderWidth: 1, borderColor: colors.border,

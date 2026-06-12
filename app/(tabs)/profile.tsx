@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/src/AuthContext';
 import { Card, Avatar, RankChip, ROLE_LABEL } from '@/src/ui';
 import { PRIVACY_POLICY_URL, TERMS_URL } from '@/src/config';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { colors, spacing, radius, font, serif } from '@/src/theme';
 
 export default function Profile() {
   const { member, user, signOut } = useAuth();
@@ -94,7 +94,7 @@ function MenuItem({ icon, label, onPress }: { icon: keyof typeof Ionicons.glyphM
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   top: { flexDirection: 'row', alignItems: 'center' },
-  name: { fontSize: font.size.xl, fontWeight: font.weight.black, color: colors.text },
+  name: { fontSize: font.size.xl + 2, fontFamily: serif, color: colors.text },
   owner: { fontSize: font.size.sm, color: colors.textDim, marginTop: 2 },
   badges: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: spacing.sm },
   verified: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#0E2A1E', borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 2 },

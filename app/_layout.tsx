@@ -4,6 +4,7 @@ import { Stack, useRouter, type ErrorBoundaryProps } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
+import { useFonts, PlayfairDisplay_600SemiBold, PlayfairDisplay_700Bold } from '@expo-google-fonts/playfair-display';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/src/AuthContext';
@@ -42,6 +43,7 @@ function RootNavigator() {
   const { token, member, loading, setMember } = useAuth();
   const [resolved, setResolved] = useState(false);
   const [resolving, setResolving] = useState(false);
+  const [fontsLoaded] = useFonts({ PlayfairDisplay_600SemiBold, PlayfairDisplay_700Bold });
   useNotificationRouting(!!token);
 
   // On cold start we only restore token+user; fetch the membership once so the
@@ -62,7 +64,7 @@ function RootNavigator() {
       });
   }, [token, member, resolved, resolving, setMember]);
 
-  if (loading || (token && !member && !resolved)) {
+  if (!fontsLoaded || loading || (token && !member && !resolved)) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator color={colors.primary} size="large" />

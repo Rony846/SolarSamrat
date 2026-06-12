@@ -9,7 +9,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getFeed, getGroups, likePost } from '@/src/api/samrat';
 import type { Post } from '@/src/api/types';
 import { Card, Avatar, RankChip, Loading, Empty, timeAgo, ROLE_LABEL } from '@/src/ui';
-import { colors, spacing, radius, font } from '@/src/theme';
+import { colors, spacing, radius, font, serif } from '@/src/theme';
 
 export default function Feed() {
   const router = useRouter();
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg, paddingVertical: spacing.md,
     borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  brand: { fontSize: font.size.xl, fontWeight: font.weight.black, color: colors.text },
+  brand: { fontSize: font.size.xl + 2, fontFamily: serif, color: colors.text, letterSpacing: 0.3 },
   brandSub: { fontSize: font.size.xs, color: colors.primary, fontWeight: font.weight.semibold },
   headerBtns: { flexDirection: 'row', gap: spacing.sm },
   iconBtn: { padding: spacing.xs },
