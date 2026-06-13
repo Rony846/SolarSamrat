@@ -26,7 +26,7 @@ workflows:
           include: true
           source: true
     integrations:
-      app_store_connect: SolarSamrat_ASC
+      app_store_connect: MuscleGrid_ASC   # reuse the existing team-level ASC key (works for any app in the team)
     environment:
       vars:
         APP_STORE_APPLE_ID: "6779828126"
