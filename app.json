@@ -27,7 +27,8 @@
       "adaptiveIcon": {
         "backgroundColor": "#110E07",
         "foregroundImage": "./assets/adaptive-icon.png"
-      }
+      },
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -53,7 +54,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+        "projectId": "4da08763-8fe9-4b3f-91ed-c1e42aced839"
       }
     },
     "owner": "rony846"
