@@ -29,7 +29,7 @@ workflows:
       app_store_connect: SolarSamrat_ASC
     environment:
       vars:
-        APP_STORE_APPLE_ID: "REPLACE_WITH_ASC_APP_ID"
+        APP_STORE_APPLE_ID: "6779828126"
         BUNDLE_ID: "in.solarsamrat.app"
       node: 20
       xcode: latest
