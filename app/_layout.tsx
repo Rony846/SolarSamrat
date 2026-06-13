@@ -44,7 +44,10 @@ function RootNavigator() {
   const { token, member, loading, setMember } = useAuth();
   const [resolved, setResolved] = useState(false);
   const [resolving, setResolving] = useState(false);
-  const [fontsLoaded] = useFonts({ PlayfairDisplay_600SemiBold, PlayfairDisplay_700Bold });
+  // Load the brand serif in the background. NEVER gate the app on it — if the
+  // font hangs/fails on a device, the decorative wordmarks just fall back to the
+  // system font rather than leaving the user on a blank screen.
+  useFonts({ PlayfairDisplay_600SemiBold, PlayfairDisplay_700Bold });
   useNotificationRouting(!!token);
 
   // On cold start we only restore token+user; fetch the membership once so the
@@ -65,7 +68,7 @@ function RootNavigator() {
       });
   }, [token, member, resolved, resolving, setMember]);
 
-  if (!fontsLoaded || loading || (token && !member && !resolved)) {
+  if (loading || (token && !member && !resolved)) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator color={colors.primary} size="large" />
