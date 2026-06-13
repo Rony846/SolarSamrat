@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
-import { getBizSummary, listQuotes, type Quote } from '@/src/api/biz';
+import { getBizSummary, listQuotes, getKhata, type Quote } from '@/src/api/biz';
 import { Card, Loading, inr } from '@/src/ui';
 import { spacing, radius, font } from '@/src/theme';
 import { useThemed, type ThemePalette } from '@/src/ThemeContext';
@@ -21,9 +21,10 @@ export default function Business() {
   const router = useRouter();
   const sumQ = useQuery({ queryKey: ['biz-summary'], queryFn: getBizSummary });
   const quotesQ = useQuery({ queryKey: ['quotes'], queryFn: () => listQuotes() });
+  const khataQ = useQuery({ queryKey: ['khata'], queryFn: getKhata });
   const s = sumQ.data;
 
-  const refetch = () => { sumQ.refetch(); quotesQ.refetch(); };
+  const refetch = () => { sumQ.refetch(); quotesQ.refetch(); khataQ.refetch(); };
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -52,10 +53,28 @@ export default function Business() {
               <Stat label="Pending" value={String(s.pending_quotes)} icon="hourglass" small />
             </View>
 
+            <TouchableOpacity activeOpacity={0.85} onPress={() => router.push('/khata')}>
+              <Card style={styles.outCard}>
+                <View>
+                  <Text style={styles.outLabel}>Outstanding (Khata)</Text>
+                  <Text style={styles.outValue}>{inr(khataQ.data?.total_outstanding || 0)}</Text>
+                </View>
+                <View style={styles.outGo}>
+                  <Ionicons name="book" size={20} color={colors.primary} />
+                  <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+                </View>
+              </Card>
+            </TouchableOpacity>
+
             <View style={styles.actions}>
               <Action icon="document-text" label="New Quote" primary onPress={() => router.push('/quotes/new')} />
+              <Action icon="receipt" label="New Invoice" onPress={() => router.push('/invoices/new')} />
               <Action icon="person-add" label="Customers" onPress={() => router.push('/customers')} />
+            </View>
+            <View style={styles.actions}>
+              <Action icon="book" label="Khata" onPress={() => router.push('/khata')} />
               <Action icon="add-circle" label="Add Sale" onPress={() => router.push('/sales/new')} />
+              <View style={{ flex: 1 }} />
             </View>
 
             <View style={styles.sectionRow}>
@@ -122,7 +141,11 @@ const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   stat: { flex: 1, alignItems: 'flex-start' },
   statValue: { fontSize: font.size.xxl, fontWeight: font.weight.black, color: colors.text, marginTop: spacing.sm },
   statLabel: { fontSize: font.size.xs, color: colors.muted, marginTop: 2 },
-  actions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm, marginBottom: spacing.lg },
+  outCard: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md, borderColor: colors.primaryDark },
+  outLabel: { color: colors.textDim, fontSize: font.size.sm, fontWeight: font.weight.semibold },
+  outValue: { color: colors.warning, fontSize: font.size.xxl, fontWeight: font.weight.black, marginTop: 2 },
+  outGo: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  actions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm, marginBottom: spacing.md },
   action: { flex: 1, alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.md, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.card },
   actionPrimary: { backgroundColor: colors.primary, borderColor: colors.primary },
   actionLabel: { fontSize: font.size.xs, color: colors.text, fontWeight: font.weight.heavy },

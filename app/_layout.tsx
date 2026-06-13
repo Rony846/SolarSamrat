@@ -104,6 +104,8 @@ function RootNavigator() {
         <Stack.Screen name="quotes" />
         <Stack.Screen name="customers" />
         <Stack.Screen name="sales" />
+        <Stack.Screen name="invoices" />
+        <Stack.Screen name="khata" />
       </Stack.Protected>
     </Stack>
   );

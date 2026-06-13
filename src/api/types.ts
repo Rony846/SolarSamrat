@@ -21,6 +21,7 @@ export interface Member {
   categories?: string[];
   logo_url?: string | null;
   proof_url?: string | null;
+  upi_id?: string | null;
   status: 'pending' | 'active' | 'suspended';
   verification: 'pending' | 'verified' | 'rejected';
   verification_note?: string | null;
