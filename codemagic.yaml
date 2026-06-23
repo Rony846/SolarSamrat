@@ -28,6 +28,11 @@ workflows:
     integrations:
       app_store_connect: MuscleGrid_ASC   # reuse the existing team-level ASC key (works for any app in the team)
     environment:
+      ios_signing:
+        # Uses the distribution certificate (.p12) uploaded to Codemagic → Team → Code signing identities.
+        # Codemagic auto-creates/fetches the App Store provisioning profile for this bundle via the ASC integration.
+        distribution_type: app_store
+        bundle_identifier: in.solarsamrat.app
       vars:
         APP_STORE_APPLE_ID: "6779828126"
         BUNDLE_ID: "in.solarsamrat.app"
@@ -46,14 +51,11 @@ workflows:
           cd ios
           LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
           agvtool new-version -all "$((LATEST + 1))"
-      - name: Set up code signing
+      - name: Apply code signing
         script: |
           set -e
-          keychain initialize
-          openssl genrsa -out /tmp/dist_cert_key.pem 2048
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE --certificate-key @file:/tmp/dist_cert_key.pem --create
-          keychain add-certificates
+          # Cert (.p12) + profile are provisioned automatically by the ios_signing block above —
+          # no genrsa / fetch --create here (that hit Apple's distribution-cert limit → 409).
           xcode-project use-profiles --warn-only
       - name: Build .ipa
         script: |
