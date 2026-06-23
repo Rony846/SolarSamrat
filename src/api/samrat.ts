@@ -127,6 +127,22 @@ export async function aiQuote(input: AiQuoteInput): Promise<AiQuoteResult> {
   return (await api.post('/samrat/ai/quote', input)).data;
 }
 
+// ---- branded proposals ----
+export interface ProposalInput extends AiQuoteResult {
+  customer_name: string;
+  customer_phone?: string;
+  customer_city?: string;
+  notes?: string;
+}
+export interface ProposalRef { id: string; token: string; url: string; created_at?: string; customer?: { name?: string }; }
+
+export async function createProposal(input: ProposalInput): Promise<ProposalRef> {
+  return (await api.post('/samrat/proposals', input)).data;
+}
+export async function getMyProposals(): Promise<{ proposals: ProposalRef[] }> {
+  return (await api.get('/samrat/proposals')).data;
+}
+
 // ---- directory / leaderboard ----
 export async function getLeaderboard(state?: string, role?: string): Promise<{ leaderboard: LeaderboardEntry[] }> {
   return (await api.get('/samrat/leaderboard', { params: { state, role } })).data;

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform, Share, Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { aiQuote, type AiQuoteInput } from '@/src/api/samrat';
+import { aiQuote, createProposal, type AiQuoteInput } from '@/src/api/samrat';
 import type { AiQuoteResult } from '@/src/api/types';
 import { apiError } from '@/src/api/client';
 import { Card, Field, PrimaryButton, inr } from '@/src/ui';
@@ -116,7 +116,73 @@ function ResultCard({ r }: { r: AiQuoteResult }) {
           ))}
         </View>
       )}
+
+      <ProposalBlock r={r} />
     </Card>
+  );
+}
+
+function ProposalBlock({ r }: { r: AiQuoteResult }) {
+  const { colors, styles } = useThemed(makeStyles);
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [city, setCity] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [link, setLink] = useState<string | null>(null);
+
+  const make = async () => {
+    if (!name.trim()) { Alert.alert('Add customer name', 'Enter the customer’s name for the proposal.'); return; }
+    setBusy(true);
+    try {
+      const res = await createProposal({ ...r, customer_name: name.trim(), customer_phone: phone.trim() || undefined, customer_city: city.trim() || undefined });
+      setLink(res.url);
+    } catch (e) {
+      Alert.alert('Could not create proposal', apiError(e));
+    } finally { setBusy(false); }
+  };
+
+  const shareWa = () => {
+    if (!link) return;
+    const msg = `Hi ${name.trim()}, here is your solar proposal:\n${link}`;
+    const wa = phone.replace(/\D/g, '');
+    const url = wa.length >= 10
+      ? `whatsapp://send?phone=91${wa.slice(-10)}&text=${encodeURIComponent(msg)}`
+      : `whatsapp://send?text=${encodeURIComponent(msg)}`;
+    Linking.openURL(url).catch(() => Share.share({ message: msg }));
+  };
+
+  if (link) {
+    return (
+      <View style={styles.proposalDone}>
+        <View style={styles.proposalDoneHead}><Ionicons name="checkmark-circle" size={22} color={colors.success} /><Text style={styles.proposalDoneTitle}>Proposal ready!</Text></View>
+        <Text style={styles.linkText} numberOfLines={1}>{link}</Text>
+        <PrimaryButton label="Share on WhatsApp" icon="logo-whatsapp" onPress={shareWa} />
+        <View style={{ height: spacing.sm }} />
+        <TouchableOpacity onPress={() => Share.share({ message: link })} style={styles.secondaryBtn}><Ionicons name="share-outline" size={18} color={colors.text} /><Text style={styles.secondaryText}>More share options</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => { setLink(null); setName(''); setPhone(''); setCity(''); setOpen(false); }} style={{ marginTop: spacing.sm, alignItems: 'center' }}><Text style={{ color: colors.muted, fontSize: font.size.sm }}>Create another</Text></TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (!open) {
+    return (
+      <TouchableOpacity style={styles.proposalCta} onPress={() => setOpen(true)} activeOpacity={0.85}>
+        <Ionicons name="document-text" size={20} color={colors.bg} />
+        <Text style={styles.proposalCtaText}>Create branded proposal</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  return (
+    <View style={styles.proposalForm}>
+      <Text style={styles.proposalFormTitle}>Branded proposal for your customer</Text>
+      <Field label="Customer name *" value={name} onChangeText={setName} placeholder="e.g. Mr. Sharma" />
+      <Field label="Customer phone" value={phone} onChangeText={(t) => setPhone(t.replace(/[^0-9]/g, ''))} keyboardType="numeric" placeholder="10-digit (for WhatsApp)" />
+      <Field label="City" value={city} onChangeText={setCity} placeholder="e.g. Jaipur" />
+      <View style={{ height: spacing.sm }} />
+      <PrimaryButton label="Generate proposal link" icon="link" onPress={make} loading={busy} />
+    </View>
   );
 }
 
@@ -167,4 +233,15 @@ const makeStyles = (colors: ThemePalette) => StyleSheet.create({
   assume: { marginTop: spacing.md, backgroundColor: colors.bgAlt, borderRadius: radius.md, padding: spacing.md },
   assumeTitle: { fontSize: font.size.xs, color: colors.textDim, fontWeight: font.weight.heavy, marginBottom: spacing.xs },
   assumeText: { fontSize: font.size.xs, color: colors.muted, lineHeight: 18 },
+
+  proposalCta: { marginTop: spacing.lg, backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm },
+  proposalCtaText: { color: colors.bg, fontWeight: font.weight.black, fontSize: font.size.md },
+  proposalForm: { marginTop: spacing.lg, backgroundColor: colors.bgAlt, borderRadius: radius.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
+  proposalFormTitle: { fontSize: font.size.sm, fontWeight: font.weight.heavy, color: colors.text, marginBottom: spacing.sm },
+  proposalDone: { marginTop: spacing.lg, backgroundColor: colors.bgAlt, borderRadius: radius.md, padding: spacing.md, borderWidth: 1, borderColor: colors.success },
+  proposalDoneHead: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm },
+  proposalDoneTitle: { fontSize: font.size.md, fontWeight: font.weight.black, color: colors.text },
+  linkText: { fontSize: font.size.xs, color: colors.primary, marginBottom: spacing.md },
+  secondaryBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs, paddingVertical: spacing.sm },
+  secondaryText: { color: colors.text, fontSize: font.size.sm, fontWeight: font.weight.semibold },
 });
